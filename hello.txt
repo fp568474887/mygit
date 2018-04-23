@@ -1,0 +1,19 @@
+file://10.100.64.50/  共享文件夹
+
+
+需求编号：
+提交人：
+提交原因：
+
+
+蓝色主色调色值：#2e8afc
+
+
+
+$.ajax({
+	url: getRootPath() + '/svnTask/svn',
+	type: 'post',
+	success: function (data) {
+		alert(data);
+	}
+});
