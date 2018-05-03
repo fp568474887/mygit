@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icss.mvp.dao.IProjectScheduleDao">
+	<resultMap type="com.icss.mvp.entity.ProjectSchedule" id="projectSchedule">
+		<result property="no" column="NO"/>
+		<result property="node" column="NODE"/>
+		<result property="nodeType" column="NODE_TYPE"/>
+		<result property="planDate" column="PLAN_DATE"/>
+		<result property="actualDate" column="ACTUAL_DATE"/>
+		<result property="deviationRate" column="DEVIATION_RATE"/>
+	</resultMap>
+	<select id="queryProjectScheduleNo" parameterType="java.lang.String"
+		resultMap="projectSchedule">
+		SELECT * from
+		project_schedule where no=#{no} 
+	</select>
+	<insert id="insertInfos" useGeneratedKeys="true" parameterType="java.util.List">
+		REPLACE INTO project_schedule
+		(NO,NODE,NODE_TYPE,PLAN_DATE,ACTUAL_DATE,DEVIATION_RATE)
+		VALUES
+		<foreach collection="proj" item="item" index="index"
+			separator=",">
+			(
+			#{item.no},#{item.node},#{item.nodeType},#{item.planDate},#{item.actualDate},#{item.deviationRate}
+			)
+		</foreach>
+	</insert>
+	<delete id="batchDeleteByNo"  parameterType="java.lang.String">
+        delete from project_schedule where no=#{no} 
+    </delete>
+</mapper>

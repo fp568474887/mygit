@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>可视化度量平台</title>
+ <link rel="stylesheet" type="text/css" href="../../resources/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../../resources/easyui/themes/default/easyui.css">
+<link rel="stylesheet" href="css/DefaultSkin.css" type="text/css" />
+<script type="text/javascript" src="../../resources/jquery/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../resources/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="../../resources/bootstrap/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../resources/bootstrap/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="../../resources/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../resources/js/comm/comm.js"></script>
+<!-- <script type="text/javascript" src="js/page.js"></script> -->
+
+<style>
+	.crumbs{
+		 width:100%;
+		 height:60px;
+		 line-height:60px;
+		 background:#1A5E9F;	
+		 text-align:center;	 
+	}
+	.crumbs>ul{
+		margin:0 15px;
+	}
+	.crumbs>ul>li{
+		float:left;
+	}
+	.crumbs>ul>li>a{
+		font-size:18px;
+		color:#667D9C;
+		text-decoration:none;
+		padding:3px 10px;
+	}
+	.crumbs>ul>li>b{
+		font-size:18px;
+		color:#667D9C;
+		font-weight:normal;
+	}
+	.crumbs>ul>li>a.active{
+		color:#EBFFFF;
+	}
+	
+	
+	.list{width: 100%;margin:2px auto 0 auto;}
+	.list ul li{text-align:left}
+	.list ul li a{padding-left: 40px;color: #EBFFFF; font-size:14px; display: block; height:45px;line-height: 45px;position: relative;border-bottom:solid 1px #5FACFA;
+	text-decoration:none; overflow: hidden;white-space: nowrap;text-overflow: ellipsis;}	
+	.list ul.yiji  li a{padding-left: 40px;}
+	.list ul.erji li a{padding-left: 60px;}
+	.list ul.sanji li a{padding-left: 80px;}
+	.list ul.yiji li .inactive{ background:url(images/off.png) no-repeat 20px center;}
+	.list ul.yiji li .inactives{background:url(images/on.png) no-repeat 20px center;}
+	.list ul.erji li .inactive{ background:url(images/off.png) no-repeat 40px center;}
+	.list ul.erji li .inactives{background:url(images/on.png) no-repeat 40px center;}
+	.list ul.sanji li .inactive{ background:url(images/off.png) no-repeat 60px center;}
+	.list ul.sanji li .inactives{background:url(images/on.png) no-repeat 60px center;} 
+	.list ul li ul{display: none;}
+	/* .list ul li ul li { border-left:0; border-right:0; border-color:#5FACFA;} */
+	.list ul li ul li ul{display: none;}
+	.list ul li ul li a{ padding-left:20px;}
+	/* .list ul li ul li ul li { border-color:#5FACFA; } */
+	/* .last{ border-color:#6196bb; } */
+	.list ul li ul li ul li a{ padding-left:30px;}
+	.fold{
+		position:absolute;
+		/* padding-left: 2px; */
+		width:21px;
+		height:50px;
+		line-height:50px;
+		color:#EBFFFF;
+		background:#1A5E9F;
+		top:50%;
+		left:230px;
+		margin-top:-25px;
+		z-index:99999;
+		font-size:21px;	
+		text-align:center;	
+		border-top-right-radius: 8px;
+    	border-bottom-right-radius: 8px;
+    	cursor:pointer;
+	}
+	.fold p{margin-left:-13px;}
+	
+</style>
+
+
+</head>
+
+<body>
+<div class="top">
+        <div class="logo-index" style="width: 400px;">
+            <a href=""><img src="images/logo.png" style="margin-left: 20px;margin-top: 14px;" /></a>
+            <div class="logo-text" style="float:right;margin:16px 110px 16px auto;"><span style="font-size: 20px; color: white;">2012&nbsp;&nbsp;研发项目<br />可视化管理平台</span></div>
+        </div>
+        <div class="daohang-index" style="float: right;">
+            <span style="font-size: 15px;color: white;line-height: 80px;">欢迎您，</span><span id= 'userName' style="font-size: 15px;color: white;line-height: 80px;"></span><div style="width: 1.5px;height: 25px;background-color: white;display:inline-block;margin-left: 20px;margin-bottom: -6px;"></div>
+            <span style="font-size: 15px;color: white;line-height: 80px;margin-left: 20px;">角色</span><div style="width:0; height:0; border:5px #ffffff solid; border-bottom-width:0; border-left-color:#2e8afc; border-right-color:#2e8afc;display: inline-block;margin-left: 10px;margin-bottom: 3px;"></div>
+        </div>
+    </div> 
+<div class="main">
+	<div class="left">
+		<div class="crumbs">
+			<ul class="clear">
+				<li><a class="active"  href="#" data-id="1">中软</a><b>|</b></li>
+				<li><a href="#" data-id="2">华为</a><b>|</b></li>
+				<li><a href="#" data-id="3">地域</a></li>
+			</ul>
+		</div>
+	    <div class="list"></div>	    
+	</div>
+	<div class="fold"><p>《</p></div>
+	<div class="right" id="sub-page">			
+		<iframe id="mainPage" src="index.html" style="width:calc(100% - 230px);height:100%;border:none;"></iframe>
+	</div>
+</div>
+
+<script type="text/javascript" >
+$(document).ready(function() {
+	loadLeftTree();
+});
+
+$('.list').on("click",".inactive",function(e){
+	e.preventDefault();
+	if($(this).siblings('ul').css('display')=='none'){
+		$(this).parent('li').siblings('a').removeClass('inactives');
+ 		$(this).addClass('inactives');
+		$(this).siblings('ul').slideDown(100).children('li');
+		$(this).parents('li').siblings('li').children('ul').parent('li').children('a').removeClass('inactives');			
+		$(this).parents('li').siblings('li').children('ul').slideUp(100);		
+		$(this).parents("li").addClass("active").siblings().removeClass("active");	
+		
+	}else{
+		//控制自身变成+号
+		$(this).removeClass('inactives');
+		//控制自身菜单下子菜单隐藏
+		$(this).siblings('ul').slideUp(100);
+		//控制自身子菜单变成+号
+		$(this).siblings('ul').children('li').children('ul').parent('li').children('a').addClass('inactives');
+		//控制自身菜单下子菜单隐藏
+		$(this).siblings('ul').children('li').children('ul').slideUp(100);		
+
+//		控制同级菜单只保持一个是展开的（-号显示）
+		$(this).siblings('ul').children('li').children('a.inactive').removeClass('inactives');	
+		$(this).parent().removeClass("active").siblings().removeClass("active");	
+	}
+	/* var urlFrame=$(this).attr("data-url");	
+	if(undefined==urlFrame||""==urlFrame){
+		urlFrame="index.html";
+	}
+	$("#mainPage").attr("src",urlFrame); */	
+	$(this).parent().siblings().find(".active").removeClass("active");
+	$(this).parent().find(".active").removeClass("active");
+	$("#mainPage").attr("src","index.html");
+});
+$('.list').on("click",".sanji .inactives",function(e){
+	e.preventDefault();
+	$(this).parents("li").addClass("active").siblings().removeClass("active");
+	$("#mainPage").attr("src","index.html");
+});
+
+$('.list').on("click",".areaActive",function(e){
+	e.preventDefault();	
+	var id=$(this).parents("li").attr("data-id");
+	$(this).parents("li").addClass("active").siblings().removeClass("active");
+	$("#mainPage").attr("src","index.html");
+});
+
+$(".crumbs").on("click","a",function(){
+	$(this).addClass("active").parent().siblings().find("a").removeClass("active");
+	var dep=$(this).attr("data-id");
+	loadLeftTree(dep);	
+});
+
+//加载左侧导航树
+function loadLeftTree(dep,pid,level){
+	if("-1"==pid){
+		return;
+	}
+	if(!pid){
+		pid=0;
+	}
+	if(!level){
+		level=1;
+	}
+	var url;
+	if("2"==dep){
+		url = getRootPath() + "/sysHwdept/getSysHwdeptByPId";
+		depName(pid,url);
+	}else if("3"==dep){
+		url = getRootPath() + "/tblArea/getAllTblArea";		
+		areaName(pid,url);
+	}else{ 
+		url = getRootPath() + "/opDepartment/getOpDepartmentByPId";
+		depName(pid,url);
+	}	
+}
+
+function depName(pid,url){
+	var data=returnDep(pid,url);
+	var html='';
+	var className='inactive';
+	html+="<ul class='yiji'>";
+	$.each(data,function(i,obj){
+		html+="<li data-id="+obj.deptId+"><a href='#' class='first "+className+"' title='"+obj.deptName+"'>"+obj.deptName+"</a>";
+		var data1=returnDep(obj.deptId,url);
+		html+="<ul style='display: none' class='erji'>";
+		$.each(data1,function(j,obj1){
+			html+="<li data-id="+obj1.deptId+"><a href='#' class='second "+className+"'  title='"+obj1.deptName+"'>"+obj1.deptName+"</a>";
+			var data2=returnDep(obj1.deptId,url);
+			html+="<ul class='sanji'>";
+			$.each(data2,function(z,obj2){
+				html+="<li data-id="+obj2.deptId+"><a href='#' class='third inactives'  title='"+obj2.deptName+"'>"+obj2.deptName+"</a>";							
+				html+="</li>";
+			});
+			html+="</ul>"; 
+			html+="</li>";
+		});
+		html+="</ul>"; 
+		html+="</li>";
+	});
+	html+="</ul>"; 
+	$(".list").html(html);	
+}
+function areaName(pid,url){
+	var data=returnDep(pid,url);
+	var html='';
+	var className='areaActive';
+	html+="<ul class='yiji'>";
+	$.each(data,function(i,obj){
+		html+="<li data-id="+obj.id+"><a href='#' class="+className+">"+obj.areaName+"</a>";		
+		html+="</li>";
+	});
+	html+="</ul>"; 
+	$(".list").html(html);
+}
+function returnDep(pid,url){
+	var dataMsg;
+	$.ajax({
+        url: url,
+        type: 'POST',
+        data: {"pId":pid},
+        async: false,
+        success: function(data){
+        	if(data.data!=[]){
+        		dataMsg=data.data;
+        	}    
+        }        
+	});	
+	return dataMsg;
+}
+$('.fold').click(function(){
+	if($(this).hasClass("active")){
+		$(this).html("<p>《</p>").removeClass("active").animate({"left":"230px"},300).find("p").css("marginLeft","-13px");
+		$(this).siblings(".left").animate({"width":"230px"},300);
+		$(this).siblings(".right").animate({"left":"230px"},300).find("iframe").animate({"width":($(window).width()-230)+"px"},300);
+	}else{
+		$(this).html("<p>》</p>").addClass("active").animate({"left":"0px"},300).find("p").css("marginLeft","2px");
+		$(this).siblings(".left").animate({"width":"0px"},300);
+		$(this).siblings(".right").animate({"left":"0px"},300).find("iframe").animate({"width":"100%"},300);
+	}
+});
+
+</script>
+
+</body>
+</html>

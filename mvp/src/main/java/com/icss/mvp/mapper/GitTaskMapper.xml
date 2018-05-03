@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icss.mvp.dao.IGitTaskDao">
+<!-- git采集的数据也存到SVN_LOG表 -->
+	<insert id="saveLogList" useGeneratedKeys="true" parameterType="java.util.List">
+		INSERT ignore INTO svn_log (ID, AUTHOR, COMMITTIME, MESSAGE,
+		REVISION,MODIFYNUM,DELNUM,NO,COLDATE,FILENUM)
+		VALUES
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id},#{item.author},#{item.commitime},#{item.message},#{item.revision},#{item.modifyNum},#{item.delNum},#{item.no},#{item.colDate},#{item.fileNum})
+		</foreach>
+	</insert>
+</mapper>

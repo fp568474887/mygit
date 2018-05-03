@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>可视化度量平台</title>
+    <link rel="stylesheet" href="../../resources/easyui/themes/default/easyui.css" type="text/css" />
+    <link rel="stylesheet" href="../../resources/bootstrap/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/DefaultSkin.css" type="text/css" />
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../../resources/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../resources/js/comm/datagrid-header-tooltip.js"></script>
+    <script type="text/javascript" src="js/echarts.common.min.js"></script>
+    <script type="text/javascript" src="../../resources/underscore/underscore.js"></script>
+    <script type="text/javascript" src="../../resources/js/comm/comm.js"></script>
+    <script type="text/javascript" src="js/gaikuang.js"></script>
+    <style>
+		.tablenew tr:nth-child(odd){background:#ecf5ff;}
+		.mousetable tr:hover{background:#73B1E0;}
+	 	.namespan{  
+		    display: inline-block;
+		    width: 260px;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		}
+		.milestonetime{
+			margin-top: 98px;
+		    position: absolute;
+		    z-index: 1;
+	    }
+		.newicon{
+			position: absolute;
+   	 		height: 220px;
+		    width: 65px;
+		    z-index: 20;
+		    background-image: URL(images/newicon.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    text-align: center;
+	    }
+		.iterationicon{
+			position: absolute;
+   	 		height: 200px;
+		    width: 65px;
+		    z-index: 10;
+		    background-image: URL(images/iterationicon.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    text-align: center;
+	    }
+		.timespot{
+			position: absolute;
+		    height: 200px;
+		    width: 65px;
+		    z-index: 10;
+		    background-image: URL(images/timespot.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    text-align: center;
+	    }
+		.start{
+			position: absolute;
+		    height: 180px;
+		    width: 65px;
+		    z-index: 10;
+		    background-image: URL(images/start.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    text-align: center;
+	    }
+		.CPbg{
+			position: absolute;
+		    height: 200px;
+		    width: 65px;
+		    z-index: 10;
+		    background-image: URL(images/CPbg.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    color: #2e8afc;
+		    text-align: center;
+	    }
+		.iterationiconH{
+			position: absolute;
+   	 		height: 200px;
+		    width: 65px;
+		    z-index: 10;
+		    background-image: URL(images/iterationiconH.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    text-align: center;
+	    }
+		.timespotH{
+			position: absolute;
+		    height: 200px;
+		    width: 65px;
+		    z-index: 10;
+		    background-image: URL(images/timespotH.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    text-align: center;
+	    }
+		.startH{
+			position: absolute;
+		    height: 180px;
+		    width: 65px;
+		    z-index: 10;
+		    background-image: URL(images/startH.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    text-align: center;
+	    }
+		.CPbgH{
+			position: absolute;
+		    height: 200px;
+		    width: 65px;
+		    z-index: 10;
+		    background-image: URL(images/CPbgH.png);
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    color: #2e8afc;
+		    text-align: center;
+	    }
+	</style>
+    <script type="text/javascript">
+        function changeTab(obj) {
+            obj.className = 'tabs-a-current';
+            if (obj.id == "tab1") {
+                document.getElementById('tab2').className = '';
+                document.getElementById('tab1Page').style.display = 'block';
+                document.getElementById('tab2Page').style.display = 'none';
+            }
+            else {
+                document.getElementById('tab1').className = '';
+                document.getElementById('tab1Page').style.display = 'none';
+                document.getElementById('tab2Page').style.display = 'block';
+            }
+        }
+        function ExpandDetails() {
+        	document.getElementById('expand-details').style.display = 'none';
+        	document.getElementById('detailed-information').style.display = 'block';
+        }
+        function StopDetails() {
+        	document.getElementById('expand-details').style.display = 'block';
+        	document.getElementById('detailed-information').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td style="padding-right: 10px;">
+                <div style="width: 100%;color: #333333;">
+                    <div style="width: 100%;border-bottom: 2px;font-size: 14px;">
+                       <ul>
+                       		<li style="height: 30px;margin: 10px 0px 0px 0px;">
+	                       		<span class="namespan" style="position:absolute;left:1%;">项目名称：
+	                       		<span id="name" >xxxxx</span></span>
+	                       		<span style="position:absolute;left:25%">项目经理：<span id="pm">xxxxx</span></span>
+	                       		<span style="position:absolute;left:50%">端到端代码量(千行)：<span id="codeAmount">xxxxx</span></span>
+	                       		<span style="position:absolute;left:75%">项目估计工作量(人天)：<span id="projectWorkload">xxxxx</span></span>
+                       		</li>
+                       		<li style="height: 30px;">
+	                       		<span style="position:absolute;left:1%">项目计划开始时间：<span id="startDate">xxxxx</span></span>
+	                       		<span style="position:absolute;left:25%">项目计划结束时间：<span id="endDate">xxxxx</span></span>
+	                       		<span style="position:absolute;left:50%">进度偏差率：<span id="progressDeviation">xxxxx</span></span>
+	                       		<span style="position:absolute;left:75%">商务模式(FP/TM)：<span id="type">xxxxx</span></span>
+                       		</li>
+                       		<div id="expand-details" style="height: 20px;">
+                       			<a onclick="ExpandDetails()" style="text-align: center;cursor: pointer;
+                       			font-size: 14px;display: block;color: #2e8afc;">
+                       				<div><img src="images/openicon.png" alt="展开详细信息" width="17px" height="17px"/></div>
+                       			</a>
+                       		</div>
+                       		<div id="detailed-information" style="display:none">
+	                       		<li style="height: 30px;">
+		                       		<span style="position:absolute;left:1%">华为产品线：<span id="hwpdu">xxxxx</span></span>
+		                       		<span style="position:absolute;left:25%">华为子产品线：<span id="hwzpdu">xxxxx</span></span>
+		                       		<span style="position:absolute;left:50%">PDU/SPDT：<span id="pduSpdt">xxxxx</span></span>
+		                       		<span style="position:absolute;left:75%">项目类型(开发测试)：<span id="projectType">开发</span></span>
+	          
+	                       		</li>
+	                       		<li style="height: 30px;">
+		                       		<span style="position:absolute;left:1%">业务线：<span id="bu">xxxxx</span></span>
+		                       		<span style="position:absolute;left:25%">事业部：<span id="pdu">xxxxx</span></span>
+		                       		<span style="position:absolute;left:50%">交付部：<span id="du">xxxxx</span></span>
+		                       		<span style="position:absolute;left:75%">合作类型(委托开发/总...)：<span id="coopType">委托开发</span></span>
+	                       		</li>
+	                       		<li style="height: 30px;">
+		                       		<span style="position:absolute;left:1%">地域：<span id="area">xxxxx</span></span>
+		                       		<span style="position:absolute;left:17%">QA：<span id="qa">xxxxx</span></span>
+		                       		<span style="position:absolute;left:33%">SE：<span id="se">xxxxx</span></span>
+		                       		<span style="position:absolute;left:50%">项目状态(在行/关闭)：<span id="projectState">在行</span></span>
+		                       		<span style="position:absolute;left:75%">是否离岸：<span id="isOffshore">否</span></span>
+	                       		</li>
+	                       		<li style="margin-left: 1%;">
+		                       		<span >项目简介：<span id="projectSynopsis">2017年。。。</span></span>
+		                       	</li>
+		                       	<div style="height: 20px;">
+	                       			<a onclick="StopDetails()" style="text-align: center;cursor: pointer;
+	                       				font-size: 14px;display: block;color: #2e8afc;">
+	                       				<div><img src="images/outicon.png" alt="收起详细信息" width="17px" height="17px"/></div>
+                       			</a>
+                       		</div>
+                       		</div>
+                       </ul>
+                    </div>
+                    <div style="margin: 10px;border-color: #ddd;border-width: 1px;border-radius: 3px;border-style: solid;">
+                    	<div style="height: 45px;border-bottom: 5px #ddd solid;">
+                    		<div style="border-right: 1px #2e8afc solid;height: 40px;width: 98px;float: left;">
+                    			<span style="float: left;font-size: 16px;margin: 8px 10px 8px 20px;">关键角色</span>
+                    		</div>
+                    		<div style="border-right: 2px #2e8afc solid;height: 40px;width: 4px;float: left;"></div>
+                    		<div id="edit" data_obj="1" style="margin: 8px 18px 8px 8px;float: right;">
+	                    		<a onclick="tableEdit('edit','guanjianjuesedo')" style="font-size: 14px;color: #2e8afc;">
+	                    			<i><img  style="margin: 2px;" src="images/editicon.png" alt="编辑" width="17px" height="17px"/></i><span>编辑</span>
+	                    		</a>
+                    		</div>
+                    		<div id="guanjianjuesedo" style="float: right;display:none;margin: 6px 16px 6px 6px;">
+                    			<a id="tableadd" onclick="tableAdd()" class="btn btn-info" style="margin: 0px 10px 0px 0px;;padding: 3px 10px 3px 10px;">增加</a>
+	                    		<a onclick="tableCancel()" class="btn btn-default" style="margin: 0px 10px 0px 0px;;padding: 3px 10px 3px 10px;">取消</a>
+	                    		<a id="tablesave" onclick="tableSave()" class="btn btn-info" style="padding: 3px 10px 3px 10px;">保存</a>
+                    		</div>
+                    	</div>
+                    	<div style="display: flow-root;margin-top: 5px;">
+	                    	<table id="guanjianjuese" class="tablenew" style="font-size: 14px;width:100%;text-align: center;float: left;border-spacing: 0px;">
+	                    		<tr style="font-size: 14px;height: 30px;background-color: #d9dada;">
+	                    			<th style="font-weight: normal;text-align: center;width:8%;border-right: 2px #ffffff solid;">角色</th>
+	                    			<th style="font-weight: normal;text-align: center;width:10%;border-right: 2px #ffffff solid;">姓名</th>
+	                    			<th style="font-weight: normal;text-align: center;width:19%;border-right: 2px #ffffff solid;">中软工号</th>
+	                    			<th style="font-weight: normal;text-align: center;width:18%;border-right: 2px #ffffff solid;">华为工号</th>
+	                    			<th style="font-weight: normal;text-align: center;width:10%;border-right: 2px #ffffff solid;">RDPM考试</th>
+	                    			<th style="font-weight: normal;text-align: center;width:10%;border-right: 2px #ffffff solid;">答辩结果</th>
+	                    			<th style="font-weight: normal;text-align: center;width:10%;border-right: 2px #ffffff solid;">胜任度</th>
+	                    			<th style="font-weight: normal;text-align: center;width:10%;">状态</th>
+	                    			<th style="font-weight: normal;text-align: center;width:5%;"></th>
+	                    		</tr>
+	                    		<!-- <tr style="height: 30px;">
+		                    		<td date-type="select" select-date="PM,产品经理,SE,MDE,BA,IA,TC,TSE,QA,TL">PM</td>
+		                    		<td date-type="input">xxx</td><td date-type="input">123465</td><td date-type="input">123465</td>
+		                    		<td date-type="select" select-date="未通过,通过">未通过</td>
+									<td date-type="select" select-date="未通过,通过">未通过</td>
+			                    	<td date-type="select" select-date="极好,好,一般,较差">极好</td>
+			                    	<td date-type="select" select-date="在职,储备">在职</td>
+			                    	<td id="del" onclick="trdelete()"><img style="margin: 2px;" src="images/deleteicon.png" alt="删除" width="17px" height="17px"/></td>
+			                    </tr> -->
+	                    	</table>
+                    	</div>
+                    </div>
+                    <div style="margin: 10px;border-color: #ddd;border-width: 1px;border-radius: 3px;border-style: solid;">
+                    	<div style="height: 45px;border-bottom: 5px #ddd solid;">
+                    		<div style="border-right: 1px #2e8afc solid;height: 40px;width: 101px;float: left;">
+                    			<span style="float: left;font-size: 16px;margin: 8px 10px 8px 25px;">里程碑</span>
+                    		</div>
+                    		<div style="border-right: 2px #2e8afc solid;height: 40px;width: 4px;float: left;"></div>
+                    	</div>
+                    	<div id="milestone" style="position: relative;height: 200px;width: 97%;margin-left: 1.5%;background-image: URL(images/time.png);
+                    		background-position: center;background-repeat: no-repeat;">
+                    		<div>
+                    			<img class="milestonetime" src="images/timeH.png" alt="时间" width="97%" height="4px" style="width: 2%;"/>
+                    		</div>	
+                    		<div class="start" style="left: 2%;">
+	                    		<div style="margin-top: 50px;">启动</div>
+	                    		<div style="margin-top: 60px;color: #999999;">2018/01</div>
+	                    	</div>
+                    		<div class="CPbg" style="left: 7%;">
+	                    		<div style="margin-top: 88px;">CP1</div>
+	                    		<div style="margin-top: 22px;color: #999999;">2018/01</div>
+	                    	</div>
+                    		<div class="iterationicon" style="left: 14%;">
+                    			<div style="margin-top: 50px;">迭代1</div>
+	                    		<div style="margin-top: 60px;color: #999999;">2018/02</div>
+	                    	</div>
+	                    	<div class="newicon" style="left: 18%;"></div>
+                    		<div class="iterationicon" style="left: 21%;">
+                    			<div style="margin-top: 50px;">迭代2</div>
+	                    		<div style="margin-top: 60px;color: #999999;">2018/03</div>
+	                    	</div>
+                    		<div class="iterationicon" style="left: 28%;">
+                    			<div style="margin-top: 50px;">迭代3</div>
+	                    		<div style="margin-top: 60px;color: #999999;">2018/04</div>
+	                    	</div>
+                    		<div class="iterationicon" style="left: 35%;">
+                    			<div style="margin-top: 50px;">迭代4</div>
+	                    		<div style="margin-top: 60px;color: #999999;">2018/05</div>
+	                    	</div>
+                    		<div class="CPbg" style="left: 42%;">
+	                    		<div style="margin-top: 88px;">CP2</div>
+	                    		<div style="margin-top: 22px;color: #999999;">2018/06</div>
+	                    	</div>
+                    		<div class="iterationicon" style="left: 49%;">
+                    			<div style="margin-top: 50px;">迭代5</div>
+	                    		<div style="margin-top: 60px;color: #999999;">2018/07</div>
+	                    	</div>
+                    		<div class="timespot" style="left: 56%;">
+	                    		<div style="margin-top: 134px;color: #999999;">2018/08</div>
+	                    	</div>
+                    		<div class="iterationicon" style="left: 63%;">
+                    			<div style="margin-top: 50px;">迭代6</div>
+	                    		<div style="margin-top: 60px;color: #999999;">2018/09</div>
+	                    	</div>
+                    		<div class="timespot" style="left: 70%;">
+	                    		<div style="margin-top: 134px;color: #999999;">2018/10</div>
+	                    	</div>
+                    		<div class="timespot" style="left: 81%;">
+	                    		<div style="margin-top: 134px;color: #999999;">2018/11</div>
+	                    	</div>
+                    		<div class="CPbg" style="left: 88%;">
+	                    		<div style="margin-top: 88px;">CP3</div>
+	                    		<div style="margin-top: 22px;color: #999999;">2018/12</div>
+	                    	</div>
+	                    	<div class="start" style="left: 94%;">
+	                    		<div style="margin-top: 50px;">结束</div>
+	                    		<div style="margin-top: 60px;color: #999999;">2018/12</div>
+	                    	</div>
+                    	</div>
+                    	<div style="height: 40px;margin: 0px 10px 0px 10px;">
+                    		<div id="edit2" data_obj="1" style="float: right;margin: 8px;">
+	                    		<a onclick="tableEdit('edit2','cp-reviewdo')" style="font-size: 14px;color: #2e8afc;">
+	                    			<i><img  style="margin: 2px;" src="images/editicon.png" alt="编辑" width="17px" height="17px"/></i><span>编辑</span>
+	                    		</a>
+                    		</div>
+                    		<div id="cp-reviewdo" style="float: right;display:none;margin: 6px;">
+	                    		<a id="tableadd2" onclick="tableAdd2()" class="btn btn-info" style="margin: 0px 10px 0px 0px;;padding: 3px 10px 3px 10px;">增加</a>
+	                    		<a onclick="tableCancel2()" class="btn btn-default" style="margin: 0px 10px 0px 0px;;padding: 3px 10px 3px 10px;">取消</a>
+	                    		<a id="tablesave2" onclick="tableSave2()" class="btn btn-info" style="padding: 3px 10px 3px 10px;">保存</a>
+                    		</div>
+                    	</div>
+                    	<div style="display: flow-root">
+	                    	<table id="cp-review" class="tablenew" style="font-size: 14px;width:100%;text-align: center;float: left;border-spacing: 0px;">
+	                    		<tr style="font-size: 14px;height: 30px;background-color: #d9dada;">
+	                    			<th style="font-weight: normal;text-align: center;width:15%;border-right: 2px #ffffff solid;">CP</th>
+	                    			<th style="font-weight: normal;text-align: center;width:10%;border-right: 2px #ffffff solid;">类型</th>
+	                    			<th style="font-weight: normal;text-align: center;width:25%;border-right: 2px #ffffff solid;">计划签发日期</th>
+	                    			<th style="font-weight: normal;text-align: center;width:25%;border-right: 2px #ffffff solid;">实际签发日期</th>
+	                    			<th style="font-weight: normal;text-align: center;width:20%;">偏差率</th>
+	                    			<th style="font-weight: normal;text-align: center;width:5%;"></th>
+	                    		</tr>
+	                    		<!-- <tr style="height: 30px;"><td>CP1</td><td date-type="select" select-date="CP,迭代点,start,end">CP</td><td date-type="date">yyyy/mm/dd</td><td date-type="date">yyyy/mm/dd</td><td>XX</td><td id="del" onclick="trdelete()"><img style="margin: 2px;" src="images/deleteicon.png" alt="删除" width="17px" height="17px"/></td></tr> -->
+	                    	</table>
+                    	</div>
+                    </div>
+                    	
+                </div>
+           
+            </td>
+           
+        </tr>
+    </table>
+</body>
+</html>

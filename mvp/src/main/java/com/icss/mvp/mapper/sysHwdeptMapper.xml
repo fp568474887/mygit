@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icss.mvp.dao.SysHwdeptDao" >
+	<resultMap id="sysHwdeptMap" type="com.icss.mvp.entity.SysHwdept" >
+		<id column="dept_id" property="deptId"/>
+		<result column="dept_name" property="deptName"/>
+		<result column="dept_level" property="deptLevel"/>
+		<result column="parent_id" property="parentId"/>
+		<result column="operate_time" property="operateTime"/>
+		<result column="operate_user" property="operateUser"/>
+		<result column="ignoe" property="ignoe"/>
+	</resultMap>
+	
+	<select id="getSysHwdeptByPId" resultMap="sysHwdeptMap" parameterType="String">
+		select * from sys_hwdept where parent_id = #{pId}
+	</select>
+	
+	
+	<!--新增一条SysHwdept记录-->
+	<insert id="insertSysHwdept" parameterType="sysHwdept" useGeneratedKeys="true" keyProperty="deptId" >
+		insert into sys_hwdept
+		(dept_id,dept_name,dept_level,parent_id,operate_time,operate_user,ignoe)
+		values 
+		(#{deptId},#{deptName},#{deptLevel},#{parentId},#{operateTime},#{operateUser},#{ignoe})
+	</insert>
+	
+	<!--修改指定SysHwdept记录-->
+	<update id="updateSysHwdept" parameterType="sysHwdept" >
+		update q_sys_hwdept 
+		<set>
+		    <if test="deptName != null">dept_name=#{deptName},</if>
+		    <if test="deptLevel != null">dept_level=#{deptLevel},</if>
+		    <if test="parentId != null">parent_id=#{parentId},</if>
+		    <if test="operateTime != null">operate_time=#{operateTime},</if>
+		    <if test="operateUser != null">operate_user=#{operateUser},</if>
+		    <if test="ignoe != null">ignoe=#{ignoe},</if>
+		</set>
+		where dept_id=#{deptId}
+	</update>
+	
+	<!--通过主键deptId查询指定SysHwdept记录-->
+	<select id="getSysHwdeptByDeptId" resultMap="sysHwdeptMap" parameterType="String" >
+		select * from sys_hwdept where dept_id=#{deptId}
+	</select>
+	
+	
+	<!--通过主键deptId单个删除-->
+	<delete id="deleteSysHwdeptByDeptId" parameterType="String" >
+		delete from sys_hwdept where dept_id=#{deptId}
+	</delete>
+	
+	
+	<!--批量删除-->
+	<delete id="deleteSysHwdeptByDeptIdList" parameterType="List" >
+		delete from sys_hwdept where deptId in
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+		#{item} 
+		</foreach> 
+	</delete>
+	
+	
+	
+	<select id="getSysHwdeptForPage" resultMap="sysHwdeptMap" parameterType="Map">
+		select * from sys_hwdept 
+		<!--自己确定如何模糊查询
+		<where>
+			<if test="roleName != null">
+         		role_name like CONCAT('%',#{roleName},'%')
+    		</if> 
+		</where>
+		-->
+		LIMIT #{startNo},#{pageSize}
+	</select>
+	
+	<select id="getSysHwdeptCount" resultType="Integer" parameterType="Map">
+		select count(0) from sys_hwdept
+		<!--自己确定如何模糊查询
+		<where>
+			<if test="roleName != null">
+         		role_name like CONCAT('%',#{roleName},'%')
+    		</if> 
+		</where>
+		-->
+	</select>
+	
+	<select id="getAllSysHwdept" resultMap="sysHwdeptMap">
+		select * from sys_hwdept
+	</select>
+	
+</mapper>

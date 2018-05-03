@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icss.mvp.dao.IProjectKeyrolesDao">
+	<resultMap type="com.icss.mvp.entity.ProjectKeyroles" id="projectKeyroles">
+		<result property="no" column="NO"/>
+		<result property="name" column="NAME"/>
+		<result property="zrAccount" column="ZR_ACCOUNT"/>
+		<result property="hwAccount" column="HR_ACCOUNT"/>
+		<result property="position" column="POSITION"/>
+		<result property="rdpmExam" column="RDPM_EXAM"/>
+		<result property="replyResults" column="REPLY_RESULTS"/>
+		<result property="proCompetence" column="PRO_COMPETENCE"/>
+		<result property="status" column="STATUS"/>
+	</resultMap>
+	<select id="queryProjectKeyrolesNo" parameterType="java.lang.String"
+		resultMap="projectKeyroles">
+		SELECT * from
+		project_keyroles where no=#{no} 
+	</select>
+	<select id="queryProjectKeyrolesZrAccount" parameterType="java.lang.String"
+		resultMap="projectKeyroles">
+		SELECT * from
+		project_keyroles where ZR_ACCOUNT=#{zrAccount} 
+	</select>
+	<insert id="insertInfos" useGeneratedKeys="true" parameterType="java.util.List">
+		REPLACE INTO project_keyroles
+		(NO,NAME,ZR_ACCOUNT,HR_ACCOUNT,POSITION,RDPM_EXAM,REPLY_RESULTS,PRO_COMPETENCE,STATUS)
+		VALUES
+		<foreach collection="proj" item="item" index="index"
+			separator=",">
+			(
+			#{item.no},#{item.name},#{item.zrAccount},#{item.hwAccount},#{item.position},#{item.rdpmExam},
+			#{item.replyResults},#{item.proCompetence},#{item.status}
+			)
+		</foreach>
+	</insert>
+	<update id="updateProjectKeyroles" parameterType="com.icss.mvp.entity.ProjectKeyroles">
+		UPDATE
+		project_keyroles SET
+		NO=#{proj.no},NAME=#{proj.name},ZR_ACCOUNT=#{proj.zrAccount},HR_ACCOUNT=#{proj.hwAccount},
+		POSITION=#{proj.position},RDPM_EXAM=#{proj.rdpmExam},REPLY_RESULTS=#{proj.replyResults},
+		PRO_COMPETENCE=#{proj.proCompetence},STATUS=#{proj.status}
+		WHERE NO=#{proj.no} and ZR_ACCOUNT=#{proj.zrAccount}
+	</update>
+	<delete id="batchDeleteByNo"  parameterType="java.lang.String">
+        delete from project_keyroles where no=#{no} 
+    </delete>
+	<delete id="batchDelete">
+        delete from project_keyroles
+    </delete>
+</mapper>

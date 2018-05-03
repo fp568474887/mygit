@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icss.mvp.dao.IProjectListDao">
+	<resultMap id="ProjListMap" type="com.icss.mvp.entity.ProjectInfo">
+		<result property="no" column="NO" />
+		<result property="bu" column="BU" />
+		<result property="du" column="DU" />
+		<result property="pdu" column="PDU" />
+		<result property="name" column="NAME" />
+		<result property="importDate" column="IMPORT_DATE" />
+		<result property="pm" column="PM" />
+		<result property="type" column="TYPE" />
+		<result property="area" column="AREA" />
+		<result property="endDate" column="END_DATE" />
+		<result property="startDate" column="START_DATE" />
+		<result property="projectType" column="PROJECT_TYPE" />
+		<result property="qa" column="QA" />
+		<result property="hwpdu" column="HWPDU" />
+		<result property="hwzpdu" column="HWZPDU" />
+		<result property="pduSpdt" column="PDU_SPDT" />
+		<result property="projectSynopsis" column="PROJECT_SYNOPSIS" />
+		<result property="projectState" column="PROJECT_STATE" />
+		<result property="coopType" column="COOP_TYPE" />
+		<result property="isOffshore" column="IS_OFFSHORE" />
+	</resultMap>
+	<resultMap id="ProjectDetailMap" type="com.icss.mvp.entity.ProjectDetailInfo">
+		<result property="no" column="NO" />
+		<result property="name" column="NAME" />
+		<result property="bu" column="BU" />
+		<result property="pdu" column="PDU" />
+		<result property="du" column="DU" />
+		<result property="area" column="AREA" />
+		<result property="type" column="TYPE" />
+		<result property="startDate" column="START_DATE" />
+		<result property="endDate" column="END_DATE" />
+		<result property="predictMoney" column="PREDICT_MONYE" />
+		<result property="workerCount" column="WORKER_COUNT" />
+		<result property="projectType" column="PROJECT_TYPE" />
+		<result property="importDate" column="IMPORT_DATE" />
+		<result property="importUser" column="IMPORT_USER" />
+		<result property="version" column="VERSION" />
+	</resultMap>
+	<resultMap type="com.icss.mvp.entity.OrganizeMgmer" id="organize">
+		<result property="id" column="NODE_ID" />
+		<result property="name" column="NODE_NAME" />
+		<result property="level" column="LEVEL" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="createDate" column="CREATE_DATE" />
+		<result property="creater" column="CREATOR" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="updateUser" column="UPDATE_USER" />
+	</resultMap>
+	<resultMap id="CodeMasterMap" type="com.icss.mvp.entity.CodeMasterInfo">
+		<result property="codekey" column="CODEKEY" />
+		<result property="name" column="NAME" />
+		<result property="value" column="VALUE" />
+		<result property="note" column="NOTE" />
+	</resultMap>
+	<resultMap id="ProjectManager" type="com.icss.mvp.entity.ProjectManager">
+		<result property="no" column="NO" />
+		<result property="name" column="NAME" />
+		<result property="account" column="ACCOUNT" />
+		<result property="position" column="POSITION" />
+		<result property="importDate" column="IMPORT_DATE" />
+		<result property="startDate" column="START_DATE" />
+		<result property="endDate" column="END_DATE" />
+	</resultMap>
+	<select id="getList" resultType="com.icss.mvp.entity.ProjectInfo">
+		select * from (SELECT NO, BU,NAME , PDU,DU, AREA, TYPE,(SELECT
+		PROJECT_MEMBER.NAME FROM PROJECT_MEMBER WHERE PROJECT_MEMBER.NO =
+		PRO.NO
+		AND PROJECT_MEMBER.POSITION = 'PM' LIMIT 1) AS PM, START_DATE AS
+		startDate, END_DATE AS endDate,
+		PROJECT_TYPE AS projectType,IMPORT_DATE AS importDate,
+		HWPDU AS hwpdu,HWZPDU AS hwzpdu,PDU_SPDT AS pduSpdt,
+		PROJECT_SYNOPSIS AS projectSynopsis,PROJECT_STATE AS projectState,
+		COOP_TYPE AS coopType,IS_OFFSHORE AS isOffshore
+		FROM project_info pro) b
+		WHERE 1=1
+		<if test="proj.no!=null and proj.no!=''">
+			AND NO like concat('%',#{proj.no},'%')
+		</if>
+		<if test="proj.bu!=null and proj.bu!=''">
+			AND BU = #{proj.bu}
+		</if>
+		<if test="proj.pdu!=null and proj.pdu!=''">
+			AND PDU = #{proj.pdu}
+		</if>
+		<if test="proj.du!=null and proj.du!=''">
+			AND DU = #{proj.du}
+		</if>
+		<if test="proj.projectType!=null and proj.projectType!=''">
+			AND projectType = #{proj.projectType}
+		</if>
+		<if test="proj.name!=null and proj.name!=''">
+			AND NAME like concat('%',#{proj.name},'%')
+		</if>
+		<if test="proj.pm!=null and proj.pm!=''">
+			AND PM = #{proj.pm}
+		</if>
+		<if test="proj.area!=null and proj.area!=''">
+			AND AREA = #{proj.area}
+		</if>
+		<if test="sort!=null and sort!='' and order!=null and order!=''">
+			order by ${sort} ${order}
+		</if>
+	</select>
+	<select id="queryProjInfo" resultMap="ProjectDetailMap">
+		SELECT *
+		FROM project_info
+		<where>
+			<if test="projNo!=null and projNo!=''">
+				AND NO = #{projNo}
+			</if>
+		</where>
+	</select>
+
+	<select id="getProjInfo" resultMap="ProjListMap">
+		SELECT *,(SELECT PROJECT_MEMBER.NAME FROM PROJECT_MEMBER WHERE
+		PROJECT_MEMBER.NO = PRO.NO
+		AND PROJECT_MEMBER.POSITION = 'PM' LIMIT 1)
+		AS PM,(SELECT PROJECT_MEMBER.NAME FROM PROJECT_MEMBER WHERE
+		PROJECT_MEMBER.NO = PRO.NO
+		AND PROJECT_MEMBER.POSITION = 'QA' LIMIT 1)
+		AS QA
+		FROM project_info PRO
+		where bu = #{buName} and no = #{no}
+	</select>
+	<select id="getProjInfoByNo" resultMap="ProjListMap">
+		SELECT *,(SELECT PROJECT_MEMBER.NAME FROM PROJECT_MEMBER WHERE
+		PROJECT_MEMBER.NO = PRO.NO
+		AND PROJECT_MEMBER.POSITION = 'PM' LIMIT 1)
+		AS PM,(SELECT PROJECT_MEMBER.NAME FROM PROJECT_MEMBER WHERE
+		PROJECT_MEMBER.NO = PRO.NO
+		AND PROJECT_MEMBER.POSITION = 'QA' LIMIT 1)
+		AS QA
+		FROM project_info PRO
+		where no = #{no}
+	</select>
+	<select id="getBusinessUnit" resultMap="organize">
+		SELECT *
+		FROM
+		ORANIZATION_MANAGER
+		WHERE LEVEL = 0
+	</select>
+	<select id="getDeliveryUnit" resultMap="organize">
+		SELECT *
+		FROM
+		ORANIZATION_MANAGER
+		WHERE LEVEL = 1
+	</select>
+	<select id="getCountArea" resultMap="CodeMasterMap">
+		SELECT *
+		FROM
+		CODE_MASTER_INFO
+		WHERE CODEKEY='AREA'
+	</select>
+	<select id="getProjectType" resultMap="CodeMasterMap">
+		SELECT *
+		FROM
+		CODE_MASTER_INFO
+		WHERE CODEKEY='ProjectType'
+	</select>
+	<select id="getProjectManager" resultMap="ProjectManager">
+		SELECT *
+		FROM
+		PROJECT_MEMBER
+		WHERE POSITION='PM'
+	</select>
+
+	<select id="isExit" resultType="com.icss.mvp.entity.ProjectDetailInfo">
+		SELECT *
+		FROM project_info
+		where
+		NO=#{no}
+	</select>
+
+	<insert id="insertInfo" parameterType="com.icss.mvp.entity.ProjectDetailInfo">
+		INSERT into
+		project_info
+		(NAME,NO,PROJECT_TYPE,TYPE,BU,PDU,DU,AREA,PREDICT_MONYE,WORKER_COUNT,START_DATE,END_DATE,IMPORT_DATE,IMPORT_USER,PO,COUNTOFDAY,COUNTOFMONTH,HWPDU,HWZPDU,PDU_SPDT,PROJECT_SYNOPSIS,PROJECT_STATE,COOP_TYPE,IS_OFFSHORE)
+		values
+		(#{proj.name},#{proj.no},#{proj.projectType},#{proj.type},#{proj.bu},#{proj.pdu},#{proj.du},#{proj.area},#{proj.predictMoney},#{proj.workerCount},#{proj.startDate},#{proj.endDate},#{proj.importDate},#{proj.importUser},
+			#{proj.po},#{proj.countOfDay},#{proj.countOfMonth},#{proj.hwpdu},#{proj.hwzpdu},#{proj.pduSpdt},#{proj.projectSynopsis},#{proj.projectState},#{proj.coopType},#{proj.isOffshore})
+	</insert>
+	<insert id="replaceInfo" parameterType="com.icss.mvp.entity.ProjectDetailInfo">
+		REPLACE into
+		project_info
+		(NAME,NO,PROJECT_TYPE,TYPE,BU,PDU,DU,AREA,PREDICT_MONYE,WORKER_COUNT,START_DATE,END_DATE,IMPORT_DATE,IMPORT_USER,PO,COUNTOFDAY,COUNTOFMONTH,HWPDU,HWZPDU,PDU_SPDT,PROJECT_SYNOPSIS,PROJECT_STATE,COOP_TYPE,IS_OFFSHORE)
+		values
+		(#{proj.name},#{proj.no},#{proj.projectType},#{proj.type},#{proj.bu},#{proj.pdu},#{proj.du},#{proj.area},#{proj.predictMoney},#{proj.workerCount},#{proj.startDate},#{proj.endDate},#{proj.importDate},#{proj.importUser},
+			#{proj.po},#{proj.countOfDay},#{proj.countOfMonth},#{proj.hwpdu},#{proj.hwzpdu},#{proj.pduSpdt},#{proj.projectSynopsis},#{proj.projectState},#{proj.coopType},#{proj.isOffshore})
+	</insert>
+
+	<update id="updateInfo" parameterType="com.icss.mvp.entity.ProjectDetailInfo">
+		UPDATE project_info SET
+		NAME=#{name},PROJECT_TYPE=#{projectType},TYPE=#{type},BU=#{bu},PDU=#{pdu},DU=#{du},
+		AREA=#{area},PREDICT_MONYE=#{predictMoney},WORKER_COUNT=#{workerCount},START_DATE=#{startDate},END_DATE=#{endDate},
+		PO=#{po},COUNTOFDAY=#{countOfDay},COUNTOFMONTH=#{countOfMonth},VERSION=#{version}
+		WHERE NO=#{no}
+	</update>
+
+	<select id="isExitMember" resultType="com.icss.mvp.entity.ProjectManager">
+		SELECT *
+		FROM project_member
+		where NO=#{no}
+	</select>
+
+	<insert id="insertMember" parameterType="com.icss.mvp.entity.ProjectManager">
+		INSERT into
+		project_member
+		(NO,NAME,ACCOUNT,POSITION,START_DATE,END_DATE,IMPORT_DATE)
+		values
+		(#{no},#{name},#{account},#{position},#{startDate},#{endDate},#{importDate})
+	</insert>
+	<insert id="replaceMember" parameterType="com.icss.mvp.entity.ProjectManager">
+		REPLACE into
+		project_member
+		(NO,NAME,ACCOUNT,POSITION,START_DATE,END_DATE,IMPORT_DATE)
+		values
+		(#{no},#{name},#{account},#{position},#{startDate},#{endDate},#{importDate})
+	</insert>
+	<update id="updateMemberInfo" parameterType="com.icss.mvp.entity.ProjectManager">
+		UPDATE
+		project_member SET
+		NAME=#{name},ACCOUNT=#{account},POSITION=#{position},START_DATE=#{startDate},END_DATE=#{endDate}
+		WHERE NO=#{no}
+	</update>
+
+	<insert id="insertProjInfos">
+		INSERT into
+		project_info
+		(NAME,NO,PROJECT_TYPE,TYPE,BU,PDU,DU,AREA,PREDICT_MONYE,WORKER_COUNT,START_DATE,END_DATE,IMPORT_DATE,IMPORT_USER,PO,COUNTOFDAY,COUNTOFMONTH,HWPDU,HWZPDU,PDU_SPDT,PROJECT_SYNOPSIS,PROJECT_STATE,COOP_TYPE,IS_OFFSHORE)values
+		<foreach collection="list" item="projInfo" index="index"
+			separator=",">
+			(#{projInfo.name},#{projInfo.no},#{projInfo.projectType},#{projInfo.type},#{projInfo.bu},#{projInfo.pdu},#{projInfo.du},#{projInfo.area},#{projInfo.predictMoney},#{projInfo.workerCount},#{projInfo.startDate},#{projInfo.endDate},#{projInfo.importDate},#{projInfo.importUser},
+			#{projInfo.po},#{projInfo.countOfDay},#{projInfo.countOfMonth},#{projInfo.hwpdu},#{projInfo.hwzpdu},#{projInfo.pduSpdt},#{projInfo.projectSynopsis},#{projInfo.projectState},#{projInfo.coopType},#{projInfo.isOffshore})
+		</foreach>
+	</insert>
+	<insert id="insertProjMembers">
+		INSERT into
+		project_member
+		(NO,NAME,ACCOUNT,POSITION,START_DATE,END_DATE,IMPORT_DATE)values
+		<foreach collection="list" item="projMgs" index="index"
+			separator=",">
+			(#{projMgs.no},#{projMgs.name},#{projMgs.account},#{projMgs.position},#{projMgs.startDate},#{projMgs.endDate},#{projMgs.importDate})
+		</foreach>
+	</insert>
+
+	<select id="isExistVersion" resultType="com.icss.mvp.entity.ProjectInfo">
+		select * from
+		project_info
+		where version = #{version}
+	</select>
+
+	<insert id="insertmemberInfo" parameterType="com.icss.mvp.entity.ProjectMember">
+		INSERT into
+		project_members
+		(NO,NAME,PO,COMPANY,TYPE,PROLINE,SUBPROLINE,PDU,AREA,MODE,STATUS,AUTHOR,ROLE,SKILL,TEAM,UPDATETIME)
+		values(#{projm.no},#{projm.name},#{projm.po},#{projm.company},#{projm.type},#{projm.proline},#{projm.subproline},#{projm.pdu},#{projm.area},#{projm.mode},#{projm.status},#{projm.author},#{projm.role},#{projm.skill},#{projm.team},#{projm.updatetime})
+	</insert>
+	
+	<select id="queryMember" parameterType="java.util.Map" resultType="com.icss.mvp.entity.ProjectMember">
+	    SELECT *
+		FROM project_members
+		where NO=#{map.no} and AUTHOR=#{map.author}
+	</select>
+	
+	<select id="searchNameByAuthor" parameterType="java.lang.String" resultType="java.lang.String">
+	select NAME from project_members where AUTHOR= #{author}
+	</select>
+	
+	<insert id="inserClockInfo" parameterType="com.icss.mvp.entity.ProjectClock">
+	INSERT into
+		tbl_Staff_Clock_Data
+		(COMPANY,AREA,PROLINE,SUBPROLINE,PDU,AUTHOR,NAME,WORKTIME,OFFTIME,TYPE,IDNUMBER,PO)
+		values(#{projc.company},#{projc.area},#{projc.proline},#{projc.subproline},#{projc.pdu},#{projc.author},#{projc.name},#{projc.worktime},#{projc.offtime},#{projc.type},#{projc.idnumber},#{projc.po})
+	</insert>
+</mapper>

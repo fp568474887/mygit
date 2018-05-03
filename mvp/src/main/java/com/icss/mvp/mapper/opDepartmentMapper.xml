@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icss.mvp.dao.OpDepartmentDao" >
+	<resultMap id="opDepartmentMap" type="com.icss.mvp.entity.OpDepartment" >
+		<id column="ID" property="id"/>
+		<result column="DEPT_ID" property="deptId"/>
+		<result column="DEPT_NAME" property="deptName"/>
+		<result column="DEPT_LEVEL" property="deptLevel"/>
+		<result column="PARENT_DEPT_ID" property="parentDeptId"/>
+		<result column="SEQ" property="seq"/>
+		<result column="REMARK" property="remark"/>
+		<result column="ENABLE" property="enable"/>
+		<result column="CREATION_DATE" property="creationDate"/>
+		<result column="CREATE_BY" property="createBy"/>
+		<result column="LAST_UPDATE" property="lastUpdate"/>
+		<result column="LAST_UPDATE_BY" property="lastUpdateBy"/>
+		<result column="SIGN" property="sign"/>
+	</resultMap>
+	
+	<select id="getOpDepartmentByPId" resultMap="opDepartmentMap" parameterType="String">
+		select * from op_department where PARENT_DEPT_ID = #{pId}
+	</select>
+	
+	
+	<!--新增一条OpDepartment记录-->
+	<insert id="insertOpDepartment" parameterType="opDepartment" useGeneratedKeys="true" keyProperty="id" >
+		insert into op_department
+		(ID,DEPT_ID,DEPT_NAME,DEPT_LEVEL,PARENT_DEPT_ID,SEQ,REMARK,ENABLE,CREATION_DATE,CREATE_BY,LAST_UPDATE,LAST_UPDATE_BY,SIGN)
+		values 
+		(#{id},#{deptId},#{deptName},#{deptLevel},#{parentDeptId},#{seq},#{remark},#{enable},#{creationDate},#{createBy},#{lastUpdate},#{lastUpdateBy},#{sign})
+	</insert>
+	
+	<!--修改指定OpDepartment记录-->
+	<update id="updateOpDepartment" parameterType="opDepartment" >
+		update op_department 
+		<set>
+		    <if test="deptId != null">DEPT_ID=#{deptId},</if>
+		    <if test="deptName != null">DEPT_NAME=#{deptName},</if>
+		    <if test="deptLevel != null">DEPT_LEVEL=#{deptLevel},</if>
+		    <if test="parentDeptId != null">PARENT_DEPT_ID=#{parentDeptId},</if>
+		    <if test="seq != null">SEQ=#{seq},</if>
+		    <if test="remark != null">REMARK=#{remark},</if>
+		    <if test="enable != null">ENABLE=#{enable},</if>
+		    <if test="creationDate != null">CREATION_DATE=#{creationDate},</if>
+		    <if test="createBy != null">CREATE_BY=#{createBy},</if>
+		    <if test="lastUpdate != null">LAST_UPDATE=#{lastUpdate},</if>
+		    <if test="lastUpdateBy != null">LAST_UPDATE_BY=#{lastUpdateBy},</if>
+		    <if test="sign != null">SIGN=#{sign},</if>
+		</set>
+		where ID=#{id}
+	</update>
+	
+	<!--通过主键id查询指定OpDepartment记录-->
+	<select id="getOpDepartmentById" resultMap="opDepartmentMap" parameterType="String" >
+		select * from op_department where ID=#{id}
+	</select>
+	
+	
+	<!--通过主键id单个删除-->
+	<delete id="deleteOpDepartmentById" parameterType="String" >
+		delete from op_department where ID=#{id}
+	</delete>
+	
+	
+	<!--批量删除-->
+	<delete id="deleteOpDepartmentByIdList" parameterType="List" >
+		delete from op_department where id in
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+		#{item} 
+		</foreach> 
+	</delete>
+	
+	
+	
+	<select id="getOpDepartmentForPage" resultMap="opDepartmentMap" parameterType="Map">
+		select * from op_department 
+		<!--自己确定如何模糊查询
+		<where>
+			<if test="roleName != null">
+         		role_name like CONCAT('%',#{roleName},'%')
+    		</if> 
+		</where>
+		-->
+		LIMIT #{startNo},#{pageSize}
+	</select>
+	
+	<select id="getOpDepartmentCount" resultType="Integer" parameterType="Map">
+		select count(0) from op_department
+		<!--自己确定如何模糊查询
+		<where>
+			<if test="roleName != null">
+         		role_name like CONCAT('%',#{roleName},'%')
+    		</if> 
+		</where>
+		-->
+	</select>
+	
+	<select id="getAllOpDepartment" resultMap="opDepartmentMap">
+		select * from op_department
+	</select>
+	
+</mapper>
