@@ -15,7 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
 		<parent.build.sourceEncoding>UTF-8</parent.build.sourceEncoding>
 		<java.version>1.7</java.version>
-		<spring.version>4.3.8.RELEASE</spring.version>
+		<spring.version>5.2.20.RELEASE</spring.version>
 		<mybatis.version>3.2.8</mybatis.version>
 		<mybatis-spring.version>1.2.2</mybatis-spring.version>
 		<jackson.version>1.7.1</jackson.version>
